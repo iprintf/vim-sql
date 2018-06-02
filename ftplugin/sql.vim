@@ -33,6 +33,8 @@ if !exists('g:kyo_sql_db')
   let g:kyo_sql_db = 'mysql'
 endif
 
+let s:title = '-MySQL-'
+
 " 生成私有配置
 function! KyoMySQLGenConfig()
   let s = "-- Kyo MySQL IDE\n
@@ -95,21 +97,32 @@ function! s:clearComment(content_list)
   return join(newlist)
 endfunction
 
+" 跳转到显示窗口
+function! s:gotoDisplayWin()
+  if len(bufname(s:title)) == 0
+    " silent exec 'botright 15 split '.s:title
+    silent exec 'botright split  '.s:title
+  elseif bufname('%') != s:title
+    if bufwinnr(bufname(s:title)) == -1
+      silent exec 'ba'
+    endif
+    silent exec 'wincmd w'
+  endif
+endfunction
+
 " 解析配置执行mysql命令并且分割窗口显示
 function! KyoMySQLCmdView(isVisual)
+  if bufname('%') == s:title
+    silent exec 'wincmd w'
+  endif
+
   let content_list = s:parseConfig(getline(1, line('$')))
   if a:isVisual
     let content_list = GetVisualSelection()
   endif
   let content = s:clearComment(content_list)
-  silent exec ':w'
 
-  if bufwinnr(2) == -1
-    " silent exec 'botright 15 split  -MySQL-'
-    silent exec 'botright split  -MySQL-'
-  elseif winnr() == 1
-    silent exec 'wincmd w'
-  endif
+  call s:gotoDisplayWin()
   setlocal modifiable
   silent exec 'normal ggVGx'
   let cmd = "mysql -h".g:kyo_sql_host." -P".g:kyo_sql_port
@@ -128,10 +141,10 @@ endfunction
 
 " 关闭和开启显示窗口
 function! KyoMySQLWindowToggle()
-  if bufwinnr(2) == -1
+  if bufwinnr(bufname(s:title)) == -1
     silent exec ':ba'
   else
-    if bufname('%') != '-MySQL-'
+    if bufname('%') != s:title
       silent exec 'wincmd w'
     endif
     close
