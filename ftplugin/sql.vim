@@ -35,7 +35,7 @@ endif
 
 " 生成私有配置
 function! KyoMySQLGenConfig()
-    let s = "-- Kyo MySQL IDE\n
+  let s = "-- Kyo MySQL IDE\n
 \\n
 \/* Kyo MySQL IDE Config\n
 \@Host ".g:kyo_sql_host."\n
@@ -44,8 +44,8 @@ function! KyoMySQLGenConfig()
 \@Port ".g:kyo_sql_port."\n
 \@DataBase ".g:kyo_sql_db."\n
 \KYO MySQL IDE Config */"
-    call append(line('.'), split(s, '\n'))
-    return ''
+  call append(line('.'), split(s, '\n'))
+  return ''
 endfunction
 
 " 根据内容给全局配置变量赋值
@@ -153,6 +153,25 @@ function! s:mysqlExec(sql, fmt)
   return system(cmd)
 endfunction
 
+function! KyoCompleteDatabase(findstart, base)
+  let list = split(s:mysqlExec('show databases', 0), '\n')
+  return KyoComplete(a:findstart, a:base, list[1:])
+endfunction
+
+function! KyoCompleteTable(findstart, base)
+  let list = split(s:mysqlExec('show tables', 0), '\n')
+  return KyoComplete(a:findstart, a:base, list[1:])
+endfunction
+
+function! TriggerComplete(name)
+  if a:name == 'table'
+    setlocal completefunc=KyoCompleteTable
+  elseif a:name == 'db'
+    setlocal completefunc=KyoCompleteDatabase
+  endif
+  return "\<C-X>\<C-U>"
+endfunction
+
 " 运行mysql命令并且弹出选择框选择
 function! ListData(cmd)
   let out = s:mysqlExec(a:cmd, 0)
@@ -172,8 +191,9 @@ inoremap <C-R>m <ESC>:call KyoMySQLCmdView(0)<CR>i
 nnoremap ,sc :call KyoMySQLGenConfig()<CR><CR>
 ab kyomysql? <C-R>=KyoMySQLGenConfig()<CR>
 
-inoremap <F3> <C-R>=ListData('show databases')<CR>
-nnoremap <F3> i<C-R>=ListData('show databases')<CR>
-inoremap <F5> <C-R>=ListData('show tables')<CR>
-nnoremap <F5> i<C-R>=ListData('show tables')<CR>
+nnoremap <F5> i<C-R>=TriggerComplete('db')<CR>
+inoremap <F5> <C-R>=TriggerComplete('db')<CR>
+nnoremap <F3> i<C-R>=TriggerComplete('table')<CR>
+inoremap <F3> <C-R>=TriggerComplete('table')<CR>
 
+" vim:set sw=2:
