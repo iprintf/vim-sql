@@ -78,3 +78,34 @@ function! s:clearComment(content_list)
   endfor
   return join(newlist)
 endfunction
+
+" 解析配置执行mysql命令并且分割窗口显示
+function! KyoMySQLCmdView(isVisual)
+  let content_list = s:parseConfig(getline(1, line('$')))
+  if a:isVisual
+    let content_list = GetVisualSelection()
+  endif
+  let content = s:clearComment(content_list)
+  silent exec ':w'
+
+  if bufwinnr(2) == -1
+    " silent exec 'botright 15 split  -MySQL-'
+    silent exec 'botright split  -MySQL-'
+  elseif winnr() == 1
+    silent exec 'wincmd w'
+  endif
+  setlocal modifiable
+  silent exec 'normal ggVGx'
+  let cmd = "mysql -h".g:kyo_sql_host." -P".g:kyo_sql_port
+  let cmd .= " -u".g:kyo_sql_user." -p".g:kyo_sql_pwd." ".g:kyo_sql_db
+  let cmd .= " -t <<< '".content."'"
+  " call append(line('$'), cmd)
+  silent exec ':r! '.cmd
+  setlocal buflisted
+  setlocal bufhidden=hide
+  setlocal buftype=nofile
+  setlocal nomodifiable
+  setlocal noswapfile
+  setlocal nowrap
+  silent exec 'wincmd w'
+endfunction
