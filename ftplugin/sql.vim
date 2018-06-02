@@ -74,8 +74,8 @@ function! s:parseConfig(content)
     let config = a:content[start + 1 : end - 1]
     unlet a:content[start : end]
   else
-    let start = search('\/\*'.re) + 1
-    let end = search(re.'\*\/') - 1
+    let start = search('\/\*'.re, 'n') + 1
+    let end = search(re.'\*\/', 'n') - 1
     let config = getline(start, end)
   endif
   for x in config
@@ -173,5 +173,7 @@ nnoremap ,sc :call KyoMySQLGenConfig()<CR><CR>
 ab kyomysql? <C-R>=KyoMySQLGenConfig()<CR>
 
 inoremap <F3> <C-R>=ListData('show databases')<CR>
+nnoremap <F3> i<C-R>=ListData('show databases')<CR>
 inoremap <F5> <C-R>=ListData('show tables')<CR>
+nnoremap <F5> i<C-R>=ListData('show tables')<CR>
 
