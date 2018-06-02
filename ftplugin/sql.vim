@@ -33,6 +33,21 @@ if !exists('g:kyo_sql_db')
   let g:kyo_sql_db = 'mysql'
 endif
 
+" 生成私有配置
+function! KyoMySQLGenConfig()
+    let s = "-- Kyo MySQL IDE\n
+\\n
+\/* Kyo MySQL IDE Config\n
+\@Host ".g:kyo_sql_host."\n
+\@User ".g:kyo_sql_user."\n
+\@Password ".g:kyo_sql_pwd."\n
+\@Port ".g:kyo_sql_port."\n
+\@DataBase ".g:kyo_sql_db."\n
+\KYO MySQL IDE Config */"
+    call append(line('.'), split(s, '\n'))
+    return ''
+endfunction
+
 " 根据内容给全局配置变量赋值
 function! s:assignConfig(config)
   let [name, value] = split(a:config)
@@ -151,6 +166,9 @@ nnoremap ,Q :call KyoMySQLWindowToggle()<CR><CR>
 
 nnoremap ,sq :call KyoMySQLCmdView(0)<CR><CR>
 vnoremap ,sq :call KyoMySQLCmdView(1)<CR><CR>
+
+nnoremap ,sc :call KyoMySQLGenConfig()<CR><CR>
+ab kyomysql? <C-R>=KyoMySQLGenConfig()<CR>
 
 inoremap <F3> <C-R>=ListData('show databases')<CR>
 inoremap <F5> <C-R>=ListData('show tables')<CR>
