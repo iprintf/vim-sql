@@ -209,4 +209,118 @@ inoremap <F5> <C-R>=TriggerComplete('db')<CR>
 nnoremap <F3> i<C-R>=TriggerComplete('table')<CR>
 inoremap <F3> <C-R>=TriggerComplete('table')<CR>
 
+ab S? SELECT FROM WHERE
+ab U? UPDATE FROM WHERE
+ab D? DELETE FROM WHERE
+ab I? INSERT INTO () VALUES ()
+
+let s:sql_if = "IF () THEN\n
+\\n
+\ELSEIF () THEN\n
+\\n
+\ELSE\n
+\\n
+\END IF"
+
+let s:sql_case = "CASE \n
+\WHEN THEN\n
+\\n
+\ELSE\n
+\\n
+\END CASE"
+
+let s:sql_loop = "kyo: LOOP\n
+\   IF 条件表达式 THEN\n
+\       LEAVE kyo;\n
+\   END IF;\n
+\END LOOP kyo;"
+
+let s:sql_repeat = "kyo: REPEAT\n
+\\n
+\UNTIL 条件表达式 END REPEAT kyo;"
+
+let s:sql_while = "kyo: WHILE 条件表达式 DO\n
+\\n
+\END WHILE kyo;"
+
+let s:sql_declare = "-- 定义fetch取数据的临时变量\n
+\DECLARE cur_name VARCHAR(255);\n
+\-- 定义游标结束标识符\n
+\DECLARE done INT DEFAULT 0;\n
+\-- 定义游标及对应的查询语句\n
+\DECLARE o CURSOR for SELECT name FROM student;\n
+\-- 定义异常处理, 发生02000异常将done置1(即Fetch语句引用游标位置为最后一行之后)\n
+\DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;\n
+\\n
+\-- 打开游标\n
+\OPEN o;\n
+\\n
+\-- 循环遍历游标对应的查询数据\n
+\read_loop: LOOP\n
+\    -- 获取游标当前位置数据, into后面对应游标查询语句的列名, 但不能与列名命名相同, 否则获取数据失败\n
+\    FETCH o INTO cur_name;\n
+\    -- 因为定义了异常处理, 游标位置到最后会将done置True, 为真则退出循环\n
+\    IF done THEN\n
+\        LEAVE read_loop;\n
+\    END IF;\n
+\    -- 对获取游标当前位置数据进行操作(insert update delete select)\n
+\    SELECT cur_name;\n
+\END LOOP;\n
+\\n
+\-- 关闭游标\n
+\CLOSE o;"
+
+let s:create = "CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name (\n
+\   id INT PRIMARY KEY AUTO_INCREMENT,\n
+\) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;"
+
+let s:func = "DELIMITER $$\n
+\CREATE FUNCTION func_name(a TINYINT) RETURNS VARCHAR(12)\n
+\BEGIN\n
+\\n
+\END$$\n
+\DELIMITER ;"
+
+let s:procedure = "DELIMITER $$\n
+\CREATE PROCEDURE pro_name(IN a INT(11), OUT b INT(11), INOUT c INT(11))\n
+\BEGIN\n
+\\n
+\END$$\n
+\DELIMITER ;"
+
+let s:select = "SELECT\n
+\    [ALL | DISTINCT | DISTINCTROW ]\n
+\      [HIGH_PRIORITY]\n
+\      [STRAIGHT_JOIN]\n
+\    select_expr [, select_expr ...]\n
+\    [FROM table_references\n
+\    [WHERE where_condition]\n
+\    [GROUP BY {col_name | expr | position}\n
+\      [ASC | DESC], ... [WITH ROLLUP]]\n
+\    [HAVING where_condition]\n
+\    [ORDER BY {col_name | expr | position}\n
+\      [ASC | DESC], ...]\n
+\    [LIMIT {[offset,] row_count | row_count OFFSET offset}]"
+
+function! KyoSQLAbbr(content)
+  try
+    let v = eval('s:'.a:content)
+  catch /.*/
+    return ''
+  endtry
+  call append(line('.'), split(v, '\n'))
+  return ''
+endfunction
+
+ab select? <C-R>=KyoSQLAbbr('select')<CR>
+ab create? <C-R>=KyoSQLAbbr('create')<CR>
+ab func? <C-R>=KyoSQLAbbr('func')<CR>
+ab proc? <C-R>=KyoSQLAbbr('procedure')<CR>
+ab declare? <C-R>=KyoSQLAbbr('sql_declare')<CR>
+ab if? <C-R>=KyoSQLAbbr('sql_if')<CR>
+ab case? <C-R>=KyoSQLAbbr('sql_case')<CR>
+ab while? <C-R>=KyoSQLAbbr('sql_while')<CR>
+ab repeat? <C-R>=KyoSQLAbbr('sql_repeat')<CR>
+ab loop? <C-R>=KyoSQLAbbr('sql_loop')<CR>
+
 " vim:set sw=2:
