@@ -152,3 +152,6 @@ nnoremap ,Q :call KyoMySQLWindowToggle()<CR><CR>
 nnoremap ,sq :call KyoMySQLCmdView(0)<CR><CR>
 vnoremap ,sq :call KyoMySQLCmdView(1)<CR><CR>
 
+inoremap <F3> <C-R>=ListData('show databases')<CR>
+inoremap <F5> <C-R>=ListData('show tables')<CR>
+
