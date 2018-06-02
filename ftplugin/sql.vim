@@ -136,3 +136,12 @@ function! s:mysqlExec(sql, fmt)
   let cmd .= " <<< '".a:sql."'"
   return system(cmd)
 endfunction
+
+" 运行mysql命令并且弹出选择框选择
+function! ListData(cmd)
+  let out = s:mysqlExec(a:cmd, 0)
+  let list = split(out, '\n')
+  call complete(col('.'), list[1:])
+  return ''
+endfunction
+
