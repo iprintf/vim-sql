@@ -167,6 +167,7 @@ nnoremap ,Q :call KyoMySQLWindowToggle()<CR><CR>
 
 nnoremap ,sq :call KyoMySQLCmdView(0)<CR><CR>
 vnoremap ,sq :call KyoMySQLCmdView(1)<CR><CR>
+inoremap <C-R>m <ESC>:call KyoMySQLCmdView(0)<CR>i
 
 nnoremap ,sc :call KyoMySQLGenConfig()<CR><CR>
 ab kyomysql? <C-R>=KyoMySQLGenConfig()<CR>
