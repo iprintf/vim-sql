@@ -67,7 +67,8 @@ endfunction
 " 解析本文私有配置
 function! s:parseConfig(content)
   let re = '\ *kyo\ *mysql\ *ide\ *config\ *'
-  if a:content
+  let config = []
+  if type(a:content) == 3
     let start = match(a:content, '\c\/\*'.re)
     let end = match(a:content, '\c'.re.'\*\/')
     let config = a:content[start + 1 : end - 1]
