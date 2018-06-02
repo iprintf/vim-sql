@@ -149,3 +149,6 @@ autocmd QuitPre *.sql exec ':wqall!'
 
 nnoremap ,Q :call KyoMySQLWindowToggle()<CR><CR>
 
+nnoremap ,sq :call KyoMySQLCmdView(0)<CR><CR>
+vnoremap ,sq :call KyoMySQLCmdView(1)<CR><CR>
+
