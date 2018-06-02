@@ -147,3 +147,5 @@ endfunction
 
 autocmd QuitPre *.sql exec ':wqall!'
 
+nnoremap ,Q :call KyoMySQLWindowToggle()<CR><CR>
+
