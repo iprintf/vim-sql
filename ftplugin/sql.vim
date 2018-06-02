@@ -109,3 +109,16 @@ function! KyoMySQLCmdView(isVisual)
   setlocal nowrap
   silent exec 'wincmd w'
 endfunction
+
+" 关闭和开启显示窗口
+function! KyoMySQLWindowToggle()
+  if bufwinnr(2) == -1
+    silent exec ':ba'
+  else
+    if bufname('%') != '-MySQL-'
+      silent exec 'wincmd w'
+    endif
+    close
+  endif
+endfunction
+
