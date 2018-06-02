@@ -122,3 +122,17 @@ function! KyoMySQLWindowToggle()
   endif
 endfunction
 
+" 执行mysql命令并且返回结果
+function! s:mysqlExec(sql, fmt)
+  if len(a:sql) == 0
+    return ''
+  endif
+  call s:parseConfig(0)
+  let cmd = "mysql -h".g:kyo_sql_host." -P".g:kyo_sql_port
+  let cmd .= " -u".g:kyo_sql_user." -p".g:kyo_sql_pwd." ".g:kyo_sql_db
+  if a:fmt
+    let cmd .= " -t "
+  endif
+  let cmd .= " <<< '".a:sql."'"
+  return system(cmd)
+endfunction
