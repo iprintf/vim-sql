@@ -33,7 +33,7 @@ if !exists('g:kyo_sql_db')
   let g:kyo_sql_db = 'mysql'
 endif
 
-" 根据列表内容给全局配置变量赋值
+" 根据内容给全局配置变量赋值
 function! s:assignConfig(config)
   let [name, value] = split(a:config)
   if name == "@Host"
@@ -49,4 +49,21 @@ function! s:assignConfig(config)
   endif
 endfunction
 
-
+" 解析本文私有配置
+function! s:parseConfig(content)
+  let re = '\ *kyo\ *mysql\ *ide\ *config\ *'
+  if a:content
+    let start = match(a:content, '\c\/\*'.re)
+    let end = match(a:content, '\c'.re.'\*\/')
+    let config = a:content[start + 1 : end - 1]
+    unlet a:content[start : end]
+  else
+    let start = search('\/\*'.re) + 1
+    let end = search(re.'\*\/') - 1
+    let config = getline(start, end)
+  endif
+  for x in config
+    call s:assignConfig(x)
+  endfor
+  return a:content
+endfunction
