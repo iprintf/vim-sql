@@ -145,3 +145,5 @@ function! ListData(cmd)
   return ''
 endfunction
 
+autocmd QuitPre *.sql exec ':wqall!'
+
