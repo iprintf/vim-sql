@@ -67,3 +67,14 @@ function! s:parseConfig(content)
   endfor
   return a:content
 endfunction
+
+" 清除列表中空行和SQL注释行
+function! s:clearComment(content_list)
+  let newlist = []
+  for s in a:content_list
+    if strlen(s) > 0 && stridx(s, '-- ') == -1
+      call add(newlist, s)
+    endif
+  endfor
+  return join(newlist)
+endfunction
