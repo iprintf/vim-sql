@@ -97,11 +97,20 @@ function! s:clearComment(content_list)
   return join(newlist)
 endfunction
 
+function! s:createDisplayWin()
+  " silent exec 'botright 15 split '.s:title
+  silent exec 'botright split  '.s:title
+  setlocal buflisted
+  setlocal bufhidden=hide
+  setlocal buftype=nofile
+  setlocal noswapfile
+  setlocal nowrap
+endfunction
+
 " 跳转到显示窗口
 function! s:gotoDisplayWin()
   if len(bufname(s:title)) == 0
-    " silent exec 'botright 15 split '.s:title
-    silent exec 'botright split  '.s:title
+    call s:createDisplayWin()
   elseif bufname('%') != s:title
     if bufwinnr(bufname(s:title)) == -1
       silent exec 'ba'
@@ -130,18 +139,15 @@ function! KyoMySQLCmdView(isVisual)
   let cmd .= " -t <<< '".content."'"
   " call append(line('$'), cmd)
   silent exec ':r! '.cmd
-  setlocal buflisted
-  setlocal bufhidden=hide
-  setlocal buftype=nofile
   setlocal nomodifiable
-  setlocal noswapfile
-  setlocal nowrap
   silent exec 'wincmd w'
 endfunction
 
 " 关闭和开启显示窗口
 function! KyoMySQLWindowToggle()
-  if bufwinnr(bufname(s:title)) == -1
+  if len(bufname(s:title)) == 0
+    call s:createDisplayWin()
+  elseif bufwinnr(bufname(s:title)) == -1
     silent exec ':ba'
   else
     if bufname('%') != s:title
