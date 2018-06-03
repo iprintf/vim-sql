@@ -52,7 +52,12 @@ endfunction
 
 " 根据内容给全局配置变量赋值
 function! s:assignConfig(config)
-  let [name, value] = split(a:config)
+  try
+    let [name, value] = split(a:config)
+  catch /.*/
+    return
+  endtry
+
   if name == "@Host"
     let g:kyo_sql_host = value
   elseif name == "@User"
