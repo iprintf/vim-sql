@@ -176,17 +176,26 @@ function! s:mysqlExec(sql, fmt)
     let cmd .= " -t "
   endif
   let cmd .= " <<< '".a:sql."'"
-  return system(cmd)
+  try
+    let out = split(system(cmd), '\n')
+    if out[0] =~ "^mysql:.*Warning"
+      let out = out[1:]
+    endif
+    if out[0] =~ "^Tables_in" || out[0] =~ "^Database"
+      let out = out[1:]
+    endif
+    return out
+  catch /.*/
+    return []
+  endtry
 endfunction
 
 function! KyoCompleteDatabase(findstart, base)
-  let list = split(s:mysqlExec('show databases', 0), '\n')
-  return KyoComplete(a:findstart, a:base, list[1:])
+  return KyoComplete(a:findstart, a:base, s:mysqlExec('show databases', 0))
 endfunction
 
 function! KyoCompleteTable(findstart, base)
-  let list = split(s:mysqlExec('show tables', 0), '\n')
-  return KyoComplete(a:findstart, a:base, list[1:])
+  return KyoComplete(a:findstart, a:base, s:mysqlExec('show tables', 0))
 endfunction
 
 function! TriggerComplete(name)
