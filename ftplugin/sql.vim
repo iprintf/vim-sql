@@ -35,6 +35,15 @@ endif
 
 let s:title = '-MySQL-'
 
+function! s:appendContent(content)
+  try
+    call append(line('.'), split(a:content, '\n'))
+    silent exec 'normal dd'
+  catch /.*/
+  endtry
+  return ''
+endfunction
+
 " 生成私有配置
 function! KyoMySQLGenConfig()
   let s = "-- Kyo MySQL IDE\n
@@ -46,8 +55,7 @@ function! KyoMySQLGenConfig()
 \@Port ".g:kyo_sql_port."\n
 \@DataBase ".g:kyo_sql_db."\n
 \KYO MySQL IDE Config */"
-  call append(line('.'), split(s, '\n'))
-  return ''
+  return s:appendContent(s)
 endfunction
 
 " 根据内容给全局配置变量赋值
@@ -330,8 +338,7 @@ function! KyoSQLAbbr(content)
   catch /.*/
     return ''
   endtry
-  call append(line('.'), split(v, '\n'))
-  return ''
+  return s:appendContent(v)
 endfunction
 
 ab select? <C-R>=KyoSQLAbbr('select')<CR>
