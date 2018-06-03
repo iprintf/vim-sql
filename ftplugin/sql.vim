@@ -78,8 +78,10 @@ function! s:parseConfig(content)
   if type(a:content) == 3
     let start = match(a:content, '\c\/\*'.re)
     let end = match(a:content, '\c'.re.'\*\/')
-    let config = a:content[start + 1 : end - 1]
-    unlet a:content[start : end]
+    if start != -1 && end != -1
+      let config = a:content[start + 1 : end - 1]
+      unlet a:content[start : end]
+    endif
   else
     let start = search('\/\*'.re, 'n') + 1
     let end = search(re.'\*\/', 'n') - 1
