@@ -345,7 +345,7 @@ let s:select = "SELECT\n
 \      [ASC | DESC], ...]\n
 \    [LIMIT {[offset,] row_count | row_count OFFSET offset}]"
 
-let s:utf8 = "SET @@CHARACTER_SET_SERVER = utf8;\n
+let s:sql_utf8 = "SET @@CHARACTER_SET_SERVER = utf8;\n
 \SET @@COLLATION_SERVER = utf8_general_ci;"
 
 function! KyoSQLAbbr(content)
