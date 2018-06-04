@@ -33,6 +33,14 @@ if !exists('g:kyo_sql_db')
   let g:kyo_sql_db = 'mysql'
 endif
 
+if !exists('g:kyo_sql_run_file')
+  let g:kyo_sql_run_file = tempname()
+endif
+
+if !exists('g:kyo_sql_append')
+  let g:kyo_sql_append = 0
+endif
+
 let s:title = '-MySQL-'
 
 function! s:appendContent(content)
@@ -144,14 +152,19 @@ function! KyoMySQLCmdView(isVisual)
   if a:isVisual
     let content_list = GetVisualSelection()
   endif
-  let content = s:clearComment(content_list)
+  call writefile(content_list, g:kyo_sql_run_file)
+  " let content = s:clearComment(content_list)
 
   call s:gotoDisplayWin()
   setlocal modifiable
-  silent exec 'normal ggVGx'
+  if g:kyo_sql_append
+    silent exec 'normal Go'
+  else
+    silent exec 'normal ggVGx'
+  endif
   let cmd = "mysql -h".g:kyo_sql_host." -P".g:kyo_sql_port
   let cmd .= " -u".g:kyo_sql_user." -p".g:kyo_sql_pwd." ".g:kyo_sql_db
-  let cmd .= " -t <<< '".content."'"
+  let cmd .= " -t < ".g:kyo_sql_run_file
   " call append(line('$'), cmd)
   silent exec ':r! '.cmd
   setlocal nomodifiable
