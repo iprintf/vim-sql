@@ -40,6 +40,14 @@
 
             let g:kyo_sql_db = 'mysql'
 
+        配置执行SQL语句保存文件的路径(默认配置为临时文件)
+
+            let g:kyo_sql_run_file = tempname()
+
+        配置结果显示窗口开启追加模式(默认配置为0 关闭)
+
+            let g:kyo_sql_append = 1
+
     本插件快捷键配置写死在插件文件中, 如果有需求可看代码自行配置
 
     vimrc文件的配置为全局配置, 每个sql文件可独立设置私有配置, 会覆盖全局配置
