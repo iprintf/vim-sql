@@ -345,6 +345,9 @@ let s:select = "SELECT\n
 \      [ASC | DESC], ...]\n
 \    [LIMIT {[offset,] row_count | row_count OFFSET offset}]"
 
+let s:utf8 = "SET @@CHARACTER_SET_SERVER = utf8;\n
+\SET @@COLLATION_SERVER = utf8_general_ci;"
+
 function! KyoSQLAbbr(content)
   try
     let v = eval('s:'.a:content)
@@ -364,5 +367,6 @@ ab case? <C-R>=KyoSQLAbbr('sql_case')<CR>
 ab while? <C-R>=KyoSQLAbbr('sql_while')<CR>
 ab repeat? <C-R>=KyoSQLAbbr('sql_repeat')<CR>
 ab loop? <C-R>=KyoSQLAbbr('sql_loop')<CR>
+ab utf8? <C-R>=KyoSQLAbbr('sql_utf8')<CR>
 
 " vim:set sw=2:
