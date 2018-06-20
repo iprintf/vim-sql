@@ -46,7 +46,11 @@
 
         配置结果显示窗口开启追加模式(默认配置为0 关闭)
 
-            let g:kyo_sql_append = 1
+            let g:kyo_sql_append = 0
+
+        配置打开空sql文档是否自动生成模板(默认配置为0 关闭)
+
+            let g:kyo_sql_auto_template = 0
 
     本插件快捷键配置写死在插件文件中, 如果有需求可看代码自行配置
 
