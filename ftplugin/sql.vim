@@ -66,6 +66,18 @@ function! KyoMySQLGenConfig()
   return s:appendContent(s)
 endfunction
 
+" 生成计算执行时间代码
+function! KyoMySQLGenTime()
+let s = "-- 记录起始时间\n
+\set @kyo_time = now();\n
+\\n
+\-- 输入要计算执行时间的代码....\n
+\\n
+\-- 输出执行时间\n
+\select found_rows() '查询行', row_count() '影响行', timestampdiff(microsecond, @kyo_time, now()) / 1000000 '执行时间(秒)';"
+  return s:appendContent(s)
+endfunction
+
 " 根据内容给全局配置变量赋值
 function! s:assignConfig(config)
   try
@@ -246,6 +258,9 @@ inoremap <C-R>m <ESC>:call KyoMySQLCmdView(0)<CR>i
 
 nnoremap ,sc :call KyoMySQLGenConfig()<CR><CR>
 ab kyomysql? <C-R>=KyoMySQLGenConfig()<CR>
+
+nnoremap ,st :call KyoMySQLGenTime()<CR><CR>
+ab kyotime? <C-R>=KyoMySQLGenTime()<CR>
 
 nnoremap <F5> i<C-R>=TriggerComplete('db')<CR>
 inoremap <F5> <C-R>=TriggerComplete('db')<CR>
